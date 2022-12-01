@@ -1,15 +1,18 @@
 import React from 'react';
 import './Navbar.css';
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import { Box } from '@material-ui/core';
+import {AppBar, Toolbar, Typography } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 function Navbar(){
+
+  // Tollbar = barra de menu
+  // Box = itens do container
+  // Typography = cria uma tag com as informações que eu passar
+
   return(
     <>
       <AppBar position="static">
-        <Toolbar variant='dense'>
+        <Toolbar variant="dense">
           <Box style={{cursor: "pointer"}}>
             <Typography variant="h5" color="inherit">
               BlogPessoal
@@ -31,7 +34,19 @@ function Navbar(){
             
             <Box mx={1} style={{cursor: "pointer"}}>
               <Typography variant="h6" color="inherit">
-                Home
+                Temas
+              </Typography>
+            </Box>
+            
+            <Box mx={1} style={{cursor: "pointer"}}>
+              <Typography variant="h6" color="inherit">
+                Cadastrar tema
+              </Typography>
+            </Box>
+            
+            <Box mx={1} style={{cursor: "pointer"}}>
+              <Typography variant="h6" color="inherit">
+                Logout
               </Typography>
             </Box>
           </Box>
