@@ -5,17 +5,7 @@ import { Box, Button, Grid, Paper } from '@material-ui/core';
 function Home(){
   return(
     <>
-      <Paper>
-        <Box p={2}>
-          <Box display="flex" justifyContent="center">
-            <h1>Titulo</h1>
-          </Box>
-          <Box display="flex" justifyContent="center" p={2}>
-            <Button variant="contained" color="primary">texto 1</Button>
-            <Button variant="contained" color="primary">texto 2</Button>
-          </Box>
-        </Box>
-      </Paper>
+      <h1>Home</h1>
     </>
   );
 }
