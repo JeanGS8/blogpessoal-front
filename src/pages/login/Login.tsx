@@ -9,42 +9,71 @@ import { login } from '../../services/Service';
 
 function Login(){
 
+  /*
+  1) useNavigate = é o hook capaz de alterar a página para o usuário.
+  */
   let navigate = useNavigate();
 
+  /*
+  1) useLocalStorage = é o hook capaz de armazenar um valor na página, este hook vai armazenar o token.
+  2) token = é a variável que vai receber o token.
+  3) setToken = é a função capaz de atualizar o valor da variável token.
+  */
   const [token, setToken] = useLocalStorage('token');
+
+  /*
+  1) useState<UserLogin> = é o hook capaz de atualizar a página. Ele está falando que a variável userLogin é do tipo da interface UserLogin (que está em models)
+  2) userLogin = é a variável que contem os valores que o usuário mandar (usuario, senha) + os valores que a API mandar (id, token), por padrão ela está zerada.
+  3) setUserLogin = é a função capaz de alterar os valores de userLogin.
+  */
   const [userLogin, setUserLogin] = useState<UserLogin>(
       {
         id: 0,
         usuario: '',
         senha: '',
         token: '',
-      } // dados padrão do UserLogin
+      }
     );
 
-    function updateModel(e: ChangeEvent<HTMLInputElement>){ // função que vai pegar os dados que o usuário passar no input
-      setUserLogin({
-        ...userLogin, // pega tudo que estiver no userLogin
-        [e.target.name]: e.target.value // [e.target.name] = capturando a propriedade // e.target.value = capturando o valor da propriedade
-      })
+  /*
+  1) function updateModel = função feita para pegar o valor que o usuário mandar (que são os dados de login) e enviar para userLogin
+  2) setUserLogin = função do hook state para alterar os dados da variável userLogin
+  3) ...userLogin = pega tudo que estiver no userLogin (id, usuario, senha, token), para que eu possa configurar quais campos ele pode me passar do userLogin
+  4) [e.target.name] = capturando a propriedade pelo nome // e.target.value = colocamos na TAG o que ele pode me passar (por exemplo userLogin.usuario) + recebemos o valor que o usuário passar
+  */
+  function updateModel(e: ChangeEvent<HTMLInputElement>){
+    setUserLogin({
+      ...userLogin,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  /*
+  1) se o usuário conseguir logar (ter um token) ele vai ser redirecionado para a Home, o Hook só vai acontecer se o token for modificado.
+  */
+  useEffect(() => {
+    if(token != ''){
+      navigate('/home');
     }
+  }, [token])
 
-    useEffect(() => {
-      if(token != ''){
-        navigate('/home');
-      }
-    }, [token])
+  /*
+  1) function onSubmit = é uma função que vai verificar se os dados estão corretos, ela só vai ser executada quando o usuário clicar no button submit na form. (o nome da função não faz diferença).
+  2) e.preventDefault() = não vai deixar o evento atualizar a pagina.
+  3) try = vai tentar ativar a função login (que está no service), se tudo ocorrer bem ela vai retornar um alert com uma mensagem positiva.
+  4) catch = se a tentativa não ocorrer bem, ela vai retornar uma mensagem negativa.
+  5) login(`/auth/logar`, userLogin, setToken) = ativa a função login (que está no service) enviando o end-point de post login da API, os dados de login que o usuário passou, uma função do localStorage que vai pegar a resposta da API (que vai ser um token). (no service está mais explicativo)
+  */
+  async function onSubmit(e: ChangeEvent<HTMLFormElement>){
+    e.preventDefault(); // não vai permitir atualizar a tela
 
-    async function onSubmit(e: ChangeEvent<HTMLFormElement>){
-      e.preventDefault(); // não vai permitir atualizar a tela
-
-      try{
-        await login(`/usuarios/logar`, userLogin, setToken) // setTokin está salvando o tokin no localstorage
-
-        alert('usuario logado com sucesso!');
-      }catch(error){
-        alert('Dados do usuário inconsistentes. Erro ao logar!');
-      }
+    try{
+      await login(`/auth/logar`, userLogin, setToken) // setTokin está salvando o tokin no localstorage
+      alert('usuario logado com sucesso!');
+    }catch(error){
+      alert('Dados do usuário inconsistentes. Erro ao logar!');
     }
+  }
 
   return(
     <>
