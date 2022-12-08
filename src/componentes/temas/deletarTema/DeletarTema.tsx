@@ -62,6 +62,7 @@ function DeletarTema() {
                 {tema?.descricao}
               </Typography>
             </Box>
+            
           </CardContent>
           <CardActions>
             <Box display="flex" justifyContent="start" ml={1.0} mb={2} >
