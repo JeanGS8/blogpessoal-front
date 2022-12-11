@@ -3,9 +3,11 @@ import {Card, CardActions, CardContent, Button, Typography} from '@material-ui/c
 import {Box} from '@mui/material';
 import './DeletarTema.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import useLocalStorage from 'react-use-localstorage';
 import Tema from '../../../models/Tema';
 import { buscaId, deleteId } from '../../../services/Service';
+import { useSelector } from 'react-redux';
+import { TokenState } from '../../../store/tokens/tokensReducer';
+import { toast } from 'react-toastify';
 
 
 function DeletarTema() {
@@ -13,13 +15,23 @@ function DeletarTema() {
   let navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
-	const [token, setToken] = useLocalStorage('token');
-
+	const token = useSelector<TokenState, TokenState['tokens']>(
+    (state) => state.tokens
+  )
 	const [tema, setTema] = useState<Tema>()
 
 	useEffect(() => {
 		if (token == '') {
-			alert('você precisa estar logado')
+      toast.error('Você precisa estar logado', {
+        position: 'top-right', // position? topo direita
+        autoClose: 2000, // Fechar automaticamente? após 2 segundos
+        hideProgressBar: false, // não mostrar o progresso? mostrar
+        closeOnClick: true, // fechar após o click? sim
+        pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+        draggable: false, // permitir mover a notificação do local? não
+        theme: 'light', // tema? light
+        progress: undefined // 
+      });
 			navigate('/login')
 		}
 	}, [token])
@@ -43,7 +55,16 @@ function DeletarTema() {
 				'Authorization': token
 			}
     });
-    alert('Tema deletado com sucesso');
+    toast.success('Tema deletado com sucesso', {
+      position: 'top-right', // position? topo direita
+      autoClose: 2000, // Fechar automaticamente? após 2 segundos
+      hideProgressBar: false, // não mostrar o progresso? mostrar
+      closeOnClick: true, // fechar após o click? sim
+      pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+      draggable: false, // permitir mover a notificação do local? não
+      theme: 'light', // tema? light
+      progress: undefined // 
+    });
   }
   function nao(){
     navigate('/temas');

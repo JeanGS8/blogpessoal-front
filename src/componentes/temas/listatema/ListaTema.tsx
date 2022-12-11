@@ -4,8 +4,10 @@ import { Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import './ListaTema.css';
 import Tema from '../../../models/Tema';
-import useLocalStorage from 'react-use-localstorage';
 import { busca } from '../../../services/Service';
+import { useSelector } from 'react-redux';
+import { TokenState } from '../../../store/tokens/tokensReducer';
+import { toast } from 'react-toastify';
 
 function ListaTema() {
 
@@ -23,19 +25,25 @@ function ListaTema() {
   */
   const [temas, setTemas] = useState<Tema[]>([])
 
-  /*
-  1) useLocalStorage = é o hook capaz de armazenar um valor na página, este hook vai armazenar o token.
-  2) token = é a variável que vai receber o token.
-  3) setToken = é a função capaz de atualizar o valor da variável token.
-  */
-  const [token, setToken] = useLocalStorage('token');
+  const token = useSelector<TokenState, TokenState['tokens']>(
+    (state) => state.tokens
+  )
 
   /*
   1) se o usuário não possuir token ele vai ser redirecionado para a tela de login.
   */
   useEffect(() => {
     if(token == ''){
-      alert('você precisa estar logado!');
+      toast.error('Você precisa estar logado', {
+        position: 'top-right', // position? topo direita
+        autoClose: 2000, // Fechar automaticamente? após 2 segundos
+        hideProgressBar: false, // não mostrar o progresso? mostrar
+        closeOnClick: true, // fechar após o click? sim
+        pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+        draggable: false, // permitir mover a notificação do local? não
+        theme: 'light', // tema? light
+        progress: undefined // 
+      });
       navigate('/login');
     }
   }, [token])

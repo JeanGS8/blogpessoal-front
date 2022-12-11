@@ -2,9 +2,11 @@ import React, { useState, useEffect, ChangeEvent } from 'react'
 import { Container, Typography, TextField, Button } from "@material-ui/core"
 import './CadastroTema.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import useLocalStorage from 'react-use-localstorage';
 import Tema from '../../../models/Tema';
 import { buscaId, post, put } from '../../../services/Service';
+import { useSelector } from 'react-redux'
+import { TokenState } from '../../../store/tokens/tokensReducer';
+import { toast } from 'react-toastify';
 
 
 function CadastroTema() {
@@ -12,7 +14,9 @@ function CadastroTema() {
 	let navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
-	const [token, setToken] = useLocalStorage('token');
+	const token = useSelector<TokenState, TokenState['tokens']>(
+		(state) => state.tokens
+	)
 
 	const [tema, setTema] = useState<Tema>({
 		id: 0,
@@ -21,7 +25,16 @@ function CadastroTema() {
 
 	useEffect(() => {
 		if (token == '') {
-			alert('você precisa estar logado')
+			toast.error('Você precisa estar logado', {
+				position: 'top-right', // position? topo direita
+				autoClose: 2000, // Fechar automaticamente? após 2 segundos
+				hideProgressBar: false, // não mostrar o progresso? mostrar
+				closeOnClick: true, // fechar após o click? sim
+				pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+				draggable: false, // permitir mover a notificação do local? não
+				theme: 'light', // tema? light
+				progress: undefined // 
+			});
 			navigate('/login')
 		}
 	}, [token])
@@ -54,11 +67,29 @@ function CadastroTema() {
 		if(id != undefined){
 			console.log(tema)
 			put(`/tema`, tema, setTema, {headers: {'Authorization': token}});
-			alert('tema atualizado com sucesso');
+			toast.success('Tema atualizado com sucesso', {
+				position: 'top-right', // position? topo direita
+				autoClose: 2000, // Fechar automaticamente? após 2 segundos
+				hideProgressBar: false, // não mostrar o progresso? mostrar
+				closeOnClick: true, // fechar após o click? sim
+				pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+				draggable: false, // permitir mover a notificação do local? não
+				theme: 'light', // tema? light
+				progress: undefined // 
+			});
 		}
 		else{
 			post(`/tema`, tema, setTema, {headers: {'Authorization': token}});
-			alert('Tema cadastrado com sucesso');
+			toast.success('Tema cadastrado com sucesso', {
+        position: 'top-right', // position? topo direita
+        autoClose: 2000, // Fechar automaticamente? após 2 segundos
+        hideProgressBar: false, // não mostrar o progresso? mostrar
+        closeOnClick: true, // fechar após o click? sim
+        pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+        draggable: false, // permitir mover a notificação do local? não
+        theme: 'light', // tema? light
+        progress: undefined // 
+      });
 		}
 		back()
 	}

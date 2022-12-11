@@ -4,8 +4,10 @@ import { Box} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import UserLogin from '../../models/UserLogin';
-import useLocalStorage from 'react-use-localstorage';
 import { login } from '../../services/Service';
+import { useDispatch} from 'react-redux';
+import { addToken } from '../../store/tokens/actions';
+import { toast } from 'react-toastify';
 
 function Login(){
 
@@ -14,12 +16,19 @@ function Login(){
   */
   let navigate = useNavigate();
 
-  /*
-  1) useLocalStorage = é o hook capaz de armazenar um valor na página, este hook vai armazenar o token.
-  2) token = é a variável que vai receber o token.
-  3) setToken = é a função capaz de atualizar o valor da variável token.
+  const dispatch = useDispatch();
+
+  const [token, setToken] = useState('');
+
+   /*
+  1) se o usuário conseguir logar (ter um token) ele vai ser redirecionado para a Home, o Hook só vai acontecer se o token for modificado.
   */
-  const [token, setToken] = useLocalStorage('token');
+  useEffect(() => {
+    if(token != ''){
+      dispatch(addToken(token))
+      navigate('/home');
+    }
+  }, [token])
 
   /*
   1) useState<UserLogin> = é o hook capaz de atualizar a página. Ele está falando que a variável userLogin é do tipo da interface UserLogin (que está em models)
@@ -49,15 +58,6 @@ function Login(){
   }
 
   /*
-  1) se o usuário conseguir logar (ter um token) ele vai ser redirecionado para a Home, o Hook só vai acontecer se o token for modificado.
-  */
-  useEffect(() => {
-    if(token != ''){
-      navigate('/home');
-    }
-  }, [token])
-
-  /*
   1) function onSubmit = é uma função que vai verificar se os dados estão corretos, ela só vai ser executada quando o usuário clicar no button submit na form. (o nome da função não faz diferença).
   2) e.preventDefault() = não vai deixar o evento atualizar a pagina.
   3) try = vai tentar ativar a função login (que está no service), se tudo ocorrer bem ela vai retornar um alert com uma mensagem positiva.
@@ -69,9 +69,27 @@ function Login(){
 
     try{
       await login(`/auth/logar`, userLogin, setToken) // setTokin está salvando o tokin no localstorage
-      alert('usuario logado com sucesso!');
+      toast.success('Usuário logado com sucesso', {
+        position: 'top-right', // position? topo direita
+        autoClose: 2000, // Fechar automaticamente? após 2 segundos
+        hideProgressBar: false, // não mostrar o progresso? mostrar
+        closeOnClick: true, // fechar após o click? sim
+        pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+        draggable: false, // permitir mover a notificação do local? não
+        theme: 'light', // tema? light
+        progress: undefined // 
+      });
     }catch(error){
-      alert('Dados do usuário inconsistentes. Erro ao logar!');
+      toast.error('Dados do usuário inconsistentes. Erro ao logar', {
+        position: 'top-right', // position? topo direita
+        autoClose: 2000, // Fechar automaticamente? após 2 segundos
+        hideProgressBar: false, // não mostrar o progresso? mostrar
+        closeOnClick: true, // fechar após o click? sim
+        pauseOnHover: false, // pausar quando o usuário mover o mouse? não
+        draggable: false, // permitir mover a notificação do local? não
+        theme: 'light', // tema? light
+        progress: undefined // 
+      });
     }
   }
 
